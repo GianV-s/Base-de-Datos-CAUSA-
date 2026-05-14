@@ -7,3 +7,5 @@ Victor Gamarra
                           U - suarios
                           S - tock
                           A - almacenamiento
+                       
+                          pull🗿
