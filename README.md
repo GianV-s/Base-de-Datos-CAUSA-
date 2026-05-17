@@ -1,6 +1,6 @@
-Giancarlo Villachica Cuentas
-Gustavo Bustamante
-Victor Gamarra
+- Giancarlo Villachica Cuentas
+- 
+- 
 (se llama la base de datos 
                           C - ontrol de
                           A - rchivos de
