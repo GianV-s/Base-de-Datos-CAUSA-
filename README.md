@@ -1,5 +1,5 @@
 - Giancarlo Villachica Cuentas
-- 
+- victor fabricio gamarra lipa
 - 
 (se llama la base de datos 
                           C - ontrol de
