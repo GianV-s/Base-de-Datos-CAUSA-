@@ -59,3 +59,58 @@ CREATE TABLE DIRECCION (
 
 
 
+
+
+CREATE TABLE CATEGORIA (
+  id_categoria INTEGER PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion VARCHAR(300) NOT NULL
+);
+
+CREATE TABLE PRODUCTO (
+  id_producto INTEGER PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion VARCHAR(300) NOT NULL,
+  precio REAL NOT NULL,
+  peso REAL NOT NULL,
+  id_categoria INTEGER,
+  FOREIGN KEY (id_categoria) REFERENCES CATEGORIA(id_categoria)
+);
+
+
+CREATE TABLE DESCUENTO (
+  id_descuento INTEGER PRIMARY KEY,
+  descuento REAL NOT NULL,
+  fecha_limite DATE NOT NULL,
+  estado VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE DETALLE_PEDIDO (
+  id_detalle INTEGER PRIMARY KEY,
+  cantidad INTEGER NOT NULL,
+  precio_unitario REAL NOT NULL,
+  precio_final REAL NOT NULL,
+  total REAL NOT NULL,
+  id_descuento INTEGER,
+  id_producto INTEGER,
+  FOREIGN KEY (id_descuento) REFERENCES DESCUENTO(id_descuento),
+  FOREIGN KEY (id_producto) REFERENCES PRODUCTO(id_producto)
+);
+
+
+CREATE TABLE DEVOLUCION (
+  id_devolucion INTEGER PRIMARY KEY,
+  estado VARCHAR(50) NOT NULL,
+  fecha_registro DATE NOT NULL,
+  descripcion VARCHAR(300) NOT NULL
+);
+
+
+CREATE TABLE ESTADO_ENVIO (
+  id_estado INTEGER PRIMARY KEY,
+  repartidor VARCHAR(100) NOT NULL,
+  estado VARCHAR(50) NOT NULL
+);
+
+
+
