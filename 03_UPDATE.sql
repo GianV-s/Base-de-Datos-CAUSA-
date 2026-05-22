@@ -1,1 +1,4 @@
--- aca
+-- 1 update
+UPDATE PERSONA 
+SET dni = '47291035' 
+WHERE dni = '11111111';
