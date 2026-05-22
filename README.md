@@ -1,3 +1,4 @@
+Cantidad de Entidades ( por ahora 12 entidades )
 - Giancarlo Villachica Cuentas
 - victor fabricio gamarra lipa
 - 
