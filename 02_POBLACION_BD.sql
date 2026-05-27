@@ -20,3 +20,16 @@ INSERT INTO CATEGORIA (id_categoria, nombre, descripcion) VALUES
 (3, 'Snacks', 'Piqueos y golosinas'),
 (4, 'Limpieza', 'Productos de limpieza para el hogar'),
 (5, 'Tecnologia', 'Accesorios y dispositivos electronicos');
+-- TABLA 4: PRODUCTO
+INSERT INTO PRODUCTO (id_producto, nombre, descripcion, precio, peso, id_categoria) VALUES
+(1, 'Leche Gloria', 'Leche evaporada entera', 4.50, 0.40, 1),
+(2, 'Coca Cola 1L', 'Gaseosa Coca Cola', 5.00, 1.00, 2),
+(3, 'Papas Lays', 'Papas fritas clasicas', 3.50, 0.15, 3),
+(4, 'Detergente Ariel', 'Detergente en polvo', 18.00, 1.50, 4),
+(5, 'Mouse Logitech', 'Mouse inalambrico', 45.00, 0.20, 5);
+
+
+
+  
+(4, 'Detergente Ariel', 'Detergente en polvo', 18.00, 1.50, 4),
+(5, 'Mouse Logitech', 'Mouse inalambrico', 45.00, 0.20, 5);
