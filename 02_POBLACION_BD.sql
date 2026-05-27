@@ -12,3 +12,11 @@ INSERT INTO EMPRESA (nombre_cliente, categoria, ruc, iva, telefono) VALUES
 ('TIENDA EL ROSAL', 0, '10456789123', 0.18, '955667788'),
 ('DISTRIBUIDORA NORTE S.A.', 1, '20555666777', 0.12, '944332211'),
 ('MINIMARKET MI CASITA', 0, '10222333444', 0.15, '999888777');
+
+-- TABLA 3
+INSERT INTO CATEGORIA (id_categoria, nombre, descripcion) VALUES
+(1, 'Lacteos', 'Productos derivados de la leche'),
+(2, 'Bebidas', 'Gaseosas, jugos y agua'),
+(3, 'Snacks', 'Piqueos y golosinas'),
+(4, 'Limpieza', 'Productos de limpieza para el hogar'),
+(5, 'Tecnologia', 'Accesorios y dispositivos electronicos');
