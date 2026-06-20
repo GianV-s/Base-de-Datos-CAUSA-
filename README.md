@@ -4,6 +4,7 @@ Cantidad de Entidades ( por ahora 12 entidades )
 - Giancarlo Villachica Cuentas
 - victor fabricio gamarra lipa
 - Gustavo Bustamante Mamani
+
 (se llama la base de datos 
                           C - ontrol de
                           A - rchivos de
