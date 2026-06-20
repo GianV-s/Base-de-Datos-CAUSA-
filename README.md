@@ -3,7 +3,7 @@ M ER - R: https://lucid.app/lucidchart/2d957829-6ce7-44c2-aa4d-9e1ca9fa52e7/edit
 Cantidad de Entidades ( por ahora 12 entidades )
 - Giancarlo Villachica Cuentas
 - victor fabricio gamarra lipa
-- 
+- Gustavo Bustamante Mamani
 (se llama la base de datos 
                           C - ontrol de
                           A - rchivos de
