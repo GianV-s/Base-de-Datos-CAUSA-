@@ -1,0 +1,45 @@
+BEGIN;
+INSERT INTO DETALLE_PEDIDO (id_detalle, cantidad, precio_unitario, precio_final, total, id_descuento, id_producto)
+SELECT
+1001, --in
+2, --in
+p.precio,
+p.precio * (1 - COALESCE(d.descuento, 0)),
+2 * (p.precio * (1 - COALESCE(d.descuento, 0))),
+NULL,
+p.id_producto
+FROM PRODUCTO p
+LEFT JOIN DESCUENTO d ON d.id_descuento = NULL
+WHERE p.id_producto = 10;
+INSERT INTO BOLETA (id_boleta, monto, fecha_emision, id_persona, id_detalle, id_metodo)
+SELECT 500, total, CURRENT_DATE, 1, 1001, 'EF'
+FROM DETALLE_PEDIDO
+WHERE id_detalle = 1001;
+INSERT INTO DIRECCION (pais, ciudad, distrito, calle, notas_adicionales, id_persona, id_empresa)
+VALUES ('Perú', 'Arequipa', 'Yanahuara', 'Av. Lima 456', 'Frente al parque', 1, NULL);
+COMMIT;
+SELECT
+e.nombre_cliente AS nombre_empresa,
+e.ruc AS ruc_empresa,
+COUNT(f.id_factura) AS total_facturas,
+SUM(f.monto) AS dinero_total_gastado,
+AVG(f.monto) AS promedio_por_factura
+FROM EMPRESA e
+INNER JOIN FACTURA f ON e.id_empresa = f.id_empresa
+GROUP BY e.id_empresa, e.nombre_cliente, e.ruc
+HAVING SUM(f.monto) > 5000
+ORDER BY dinero_total_gastado DESC;
+COPY (
+SELECT
+e.nombre_cliente AS nombre_empresa,
+e.ruc AS ruc_empresa,
+COUNT(f.id_factura) AS total_facturas,
+SUM(f.monto) AS dinero_total_gastado
+FROM EMPRESA e
+INNER JOIN FACTURA f ON e.id_empresa = f.id_empresa
+GROUP BY e.id_empresa, e.nombre_cliente, e.ruc
+HAVING SUM(f.monto) > 5000
+ORDER BY dinero_total_gastado DESC
+)
+TO 'C:/usuarios/tu_usuario/documentos/reporte_empresas.csv'
+WITH CSV HEADER DELIMITER ',';
