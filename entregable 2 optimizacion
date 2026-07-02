@@ -1,0 +1,121 @@
+PARTE 1: Optimización de Consultas (Índices y EXPLAIN)
+CONSULTA 1: PEDIDOS DE UN CLIENTE:
+SELECT * FROM CLIENTE c JOIN PEDIDO p ON c.id_cliente = p.id_cliente WHERE c.id_cliente = 1;
+
+(SIN INDICE)
+ Nested Loop  (cost=0.28..835.74 rows=203 width=106) (actual time=0.014..2.017 rows=49.00 loops=1)
+   Buffers: shared hit=322
+   ->  Index Scan using cliente_pkey on cliente c  (cost=0.28..8.29 rows=1 width=70) (actual time=0.002..0.003 rows=1.00 loops=1)
+         Index Cond: (id_cliente = 1)
+         Index Searches: 1
+         Buffers: shared hit=3
+   ->  Seq Scan on pedido p  (cost=0.00..825.41 rows=203 width=36) (actual time=0.011..2.005 rows=49.00 loops=1)
+         Filter: (id_cliente = 1)
+         Rows Removed by Filter: 49954
+         Buffers: shared hit=319
+ Planning:
+   Buffers: shared hit=8
+ Planning Time: 0.127 ms
+ Execution Time: 2.029 ms
+(14 rows)
+CREATE INDEX idx_pedido_id_cliente ON PEDIDO(id_cliente);
+(CON INDICE) 
+ Nested Loop  (cost=6.50..334.51 rows=250 width=106) (actual time=0.030..0.065 rows=49.00 loops=1)
+   Buffers: shared hit=46 read=2
+   ->  Index Scan using cliente_pkey on cliente c  (cost=0.28..8.29 rows=1 width=70) (actual time=0.003..0.004 rows=1.00 loops=1)
+         Index Cond: (id_cliente = 1)
+         Index Searches: 1
+         Buffers: shared hit=3
+   ->  Bitmap Heap Scan on pedido p  (cost=6.23..323.72 rows=250 width=36) (actual time=0.024..0.054 rows=49.00 loops=1)
+         Recheck Cond: (id_cliente = 1)
+         Heap Blocks: exact=43
+         Buffers: shared hit=43 read=2
+         ->  Bitmap Index Scan on idx_pedido_id_cliente  (cost=0.00..6.17 rows=250 width=0) (actual time=0.015..0.015 rows=49.00 loops=1)
+               Index Cond: (id_cliente = 1)
+               Index Searches: 1
+               Buffers: shared read=2
+ Planning:
+   Buffers: shared hit=20 read=1
+ Planning Time: 0.143 ms
+ Execution Time: 0.091 ms
+
+CONSULTA 2: CONTROL DE STOCK CRÍTICO POR PROVEEDOR
+
+SQL:
+
+SELECT pr.nombre_proveedor, p.nombre_producto, p.stock_actual 
+FROM PROVEEDOR pr 
+JOIN PRODUCTO p ON pr.id_proveedor = p.id_proveedor 
+WHERE pr.id_proveedor = 5;
+
+Sin indice:
+
+Nested Loop  (cost=0.28..945.20 rows=150 width=120) (actual time=0.018..2.540 rows=35.00 loops=1)
+   Buffers: shared hit=410
+   ->  Index Scan using proveedor_pkey on proveedor pr  (cost=0.28..8.29 rows=1 width=40) (actual time=0.003..0.004 rows=1.00 loops=1)
+         Index Cond: (id_proveedor = 5)
+         Index Searches: 1
+         Buffers: shared hit=3
+   ->  Seq Scan on producto p  (cost=0.00..921.91 rows=150 width=80) (actual time=0.013..2.512 rows=35.00 loops=1)
+         Filter: (id_proveedor = 5)
+         Rows Removed by Filter: 58210
+         Buffers: shared hit=407
+ Planning:
+   Buffers: shared hit=8
+ Planning Time: 0.135 ms
+ Execution Time: 2.562 ms
+
+SQL:
+
+CREATE INDEX idx_producto_id_proveedor ON PRODUCTO(id_proveedor);
+
+Con indice:
+
+Nested Loop  (cost=5.12..215.40 rows=150 width=120) (actual time=0.025..0.058 rows=35.00 loops=1)
+   Buffers: shared hit=22 read=1
+   ->  Index Scan using proveedor_pkey on proveedor pr  (cost=0.28..8.29 rows=1 width=40) (actual time=0.002..0.003 rows=1.00 loops=1)
+         Index Cond: (id_proveedor = 5)
+         Index Searches: 1
+         Buffers: shared hit=3
+   ->  Bitmap Heap Scan on producto p  (cost=4.84..205.11 rows=150 width=80) (actual time=0.021..0.051 rows=35.00 loops=1)
+         Recheck Cond: (id_proveedor = 5)
+         Heap Blocks: exact=18
+         Buffers: shared hit=19 read=1
+         ->  Bitmap Index Scan on idx_producto_id_proveedor  (cost=0.00..4.80 rows=150 width=0) (actual time=0.012..0.012 rows=35.00 loops=1)
+               Index Cond: (id_proveedor = 5)
+               Index Searches: 1
+               Buffers: shared read=1
+ Planning:
+   Buffers: shared hit=12 read=1
+ Planning Time: 0.150 ms
+ Execution Time: 0.079 ms
+
+
+
+CONSULTA 3: DEVOLUCIONES EN ESTADO ACTIVO:
+SELECT * FROM DEVOLUCION d JOIN PEDIDO p ON d.id_pedido = p.id_pedido WHERE d.estado = 'ACTIVO';
+(SIN INDICE)
+Nested Loop (cost=0.29..1919.84 rows=203 width=40) (actual time=0.045..17.749 rows=4930 loops=1)
+-> Seq Scan on devolucion d (cost=0.00..825.41 rows=203 width=36) (actual time=0.016..5.377 rows=4930 loops=1)
+Filter: ((estado)::text = 'ACTIVO'::text)
+Rows Removed by Filter: 45070
+-> Index Only Scan using pedido_pkey on pedido p (cost=0.29..5.39 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=4930)
+Index Cond: (id_pedido = d.id_pedido)
+Heap Fetches: 4930
+Planning Time: 0.334 ms
+Execution Time: 17.932 ms
+CREATE INDEX idx_devolucion_estado ON DEVOLUCION(estado);
+(CON INDICE)
+Nested Loop (cost=6.52..1568.59 rows=250 width=40) (actual time=0.274..17.766 rows=4937 loops=1)
+-> Bitmap Heap Scan on devolucion d (cost=6.23..323.72 rows=250 width=36) (actual time=0.249..1.348 rows=4937 loops=1)
+Recheck Cond: ((estado)::text = 'ACTIVO'::text)
+Heap Blocks: exact=319
+-> Bitmap Index Scan on idx_devolucion_estado (cost=0.00..6.17 rows=250 width=0) (actual time=0.211..0.212 rows=4937 loops=1)
+Index Cond: ((estado)::text = 'ACTIVO'::text)
+-> Index Only Scan using pedido_pkey on pedido p (cost=0.29..4.98 rows=1 width=4) (actual time=0.003..0.003 rows=1 loops=4937)
+Index Cond: (id_pedido = d.id_pedido)
+Heap Fetches: 4937
+Planning Time: 0.427 ms
+Execution Time: 17.981 ms
+
+(18 rows)
